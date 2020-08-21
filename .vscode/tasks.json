@@ -1,0 +1,19 @@
+{
+    // See https://go.microsoft.    m/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "PHP CLI",
+            "type": "shell",
+            "command": "php ${file}",
+            "problemMatcher": []
+        },
+        {
+            "label": "PHPUnit",
+            "type": "shell",
+            "command": "vendor\\bin\\phpunit --testdox tests",
+            "problemMatcher": []
+        }
+    ]
+}
