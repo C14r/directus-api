@@ -443,8 +443,57 @@ class API extends Request
         return $this->endpoint(':project/users/:id/revisions/:offset')->parameters(compact('id', 'offset'));
     }
 
-    /*public function meta($meta = '*')
+
+
+
+
+    public function _single($single = true): self
     {
-        return $this->queries($this->helpers->meta($meta));
-    }*/
+        return $this->query('single', $this->helpers->single($single));
+    }
+
+    public function _limit($limit): self
+    {
+        return $this->query('limit', $this->helpers->limit($limit));
+    }
+
+    public function _offset($offset): self
+    {
+        return $this->query('offset', $this->helpers->offset($offset));
+    }
+
+    public function _page($page): self
+    {
+        return $this->query('page', $this->helpers->page($page));
+    }
+
+    public function _meta($meta = '*'): self
+    {
+        return $this->query('meta', $this->helpers->meta($meta));
+    }
+    
+    public function _status($status = '*'): self
+    {
+        return $this->query('status', $this->helpers->status($status));
+    }
+
+    public function _sort($sort): self
+    {
+        return $this->query('sort', $this->helpers->sort($sort));
+    }
+
+    public function _q($q): self
+    {
+        return $this->query('q', $this->helpers->q($q));
+    }
+
+    public function _filter($filter): self
+    {
+        return $this->query('filter', $this->helpers->filter($filter));
+    }
+
+    public function _fields($fields): self
+    {
+        return $this->query('fields', $this->helpers->fields($fields));
+    }
 }
