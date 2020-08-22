@@ -142,7 +142,7 @@ class API extends Request
      * @param integer $id   Unique identifier of the item.
      * @return self
      */
-    public function activitiy(int $id): self
+    public function activity(int $id): self
     {
         return $this->endpoint(':project/activity/:id')->parameters(compact('id'));
     }
@@ -196,6 +196,11 @@ class API extends Request
     public function modules(): self
     {
         return $this->endpoint('modules');
+    }
+
+    public function allFields(): self
+    {
+        return $this->endpoint(':project/fields');
     }
 
     public function fields(string $collection): self
