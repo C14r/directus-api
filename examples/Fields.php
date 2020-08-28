@@ -12,7 +12,7 @@ $api = new API('http://example.com/', 'api');
 $api->token('ThIs_Is_ThE_tOkEn');
 
 // List Fields
-$fields = $api->allFields()->get();
+$fields = $api->fields()->get();
 
 // List Fields in Collection
 $fields = $api->fields('my_collection')->get();

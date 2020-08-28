@@ -212,6 +212,14 @@ class Request
         }
     }
 
+    public function test(): object
+    {
+        return (object)[
+            'url' => $this->buildUrl(),
+            'options' => $this->buildOptions()
+        ];
+    }
+
     protected function request(string $method): object
     {
         $response = $this->performRequest($method, $this->buildUrl(), $this->buildOptions());

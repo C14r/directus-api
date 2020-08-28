@@ -19,16 +19,6 @@ use C14r\Directus\API;
 $api = new API('http://example.com/api/', 'v1'); // base Url and project
 ```
 
-## Error handling
-
-```php
-$items = $api->items($collection)->get();
-
-if($api->isError($items)) {
-    // The request failed.
-}
-```
-
 ## Authentification 
 
 ```php
@@ -39,14 +29,24 @@ $api->authenticate('username', '********');
 $api->token('ThIs_Is_ThE_tOkEn');
 ```
 
+## Error handling
+
+```php
+$items = $api->items($collection)->get();
+
+if($api->isError($items)) {
+    // The request failed.
+}
+```
+
 ## Items
 
 ```php
 // List the Items
-$articles = $api->items($collection)->get();
+$items = $api->items($collection)->get();
 
 // Retrieve an Item
-$article = $api->item($collection, $id)->get();
+$item = $api->item($collection, $id)->get();
 
 // Create an Item
 $api->items($collection)->create([
@@ -216,7 +216,7 @@ $modules = $api->modules()->get();
 
 ```php
 // List Fields
-$fields = $api->allFields()->get();
+$fields = $api->fields()->get();
 
 // List Fields in Collection
 $fields = $api->fields($collection)->get();
@@ -337,59 +337,242 @@ $api->projects()->create([
 ]);
 
 // Delete a Project
-$api->projectDelete()->delete(); // <-- nasty :-( 
+$api->projects($project)->delete(); // There should be no s in 'projects', but unfortunately it has to be there because of the different endpoints :(
 ```
 
 ## Relations
 
 ```php
-// Implemented but not yet documented.
+// List the Relations
+$relations = $api->relations()->get();
+
+// Retrieve a Relation
+$relation = $api->relation($id)->get();
+
+// Create a Relation
+$api->relations()->create([
+    'collection_many' => 'articles',
+    'field_many' => 'author',
+    'collection_one' => 'authors',
+    'field_one' => 'books'
+]);
+
+// Update a Relation
+$api->relation($id)->update([
+    'field_one' => 'books'
+]);
+
+//  Delete a Relation
+$api->relation($id)->delete();
 ```
 
 ## Revisions
 
 ```php
-// Implemented but not yet documented.
+// List the Revisions
+$revisions = $api->revisions()->get();
+
+// Retrieve a Revision
+$revision = $api->revision($id)->get();
 ```
 
 ## Roles
 
 ```php
-// Implemented but not yet documented.
+// List the Roles
+$roles = $api->roles()->get();
+
+// Retrieve a Role
+$role = $api->role($id)->get();
+
+// Create a Role
+$api->roles()->create([
+    'name' => 'Interns'
+]);
+
+// Update a Role
+$api->role($id)->update([
+    'description' => 'Limited access only.'
+]);
+
+// Delete a Role
+$api->role($id)->delete();
 ```
 
 ## SCIM
 
 ```php
-// Implemented but not yet documented.
+//  List SCIM Users
+$users = $api->scimUsers()->get();
+
+// Retrieve a SCIM User
+$user = $api->scimUser($external_id)->get();
+
+//  Create a SCIM User
+$api->scimUsers()->create([
+    'schemas' => [
+        'urn:ietf:params:scim:schemas:core:2.0:User'
+    ],
+    'userName' => 'johndoe@example.com',
+    'externalId' => 'johndoe-id',
+    'name' => [
+        'familyName' => 'Doe',
+        'givenName' => 'John'
+    ]
+]);
+
+// Update a SCIM User
+$api->scimUser($external_id)->update([
+    'schemas' => [
+        'urn:ietf:params:scim:schemas:core:2.0:User'
+    ],
+    'name' => [
+        'familyName' => 'Doe',
+        'givenName' => 'Johnathan'
+    ]
+]);
+
+// Delete a SCIM User
+$api->scimUser($external_id)->delete();
+
+// List the SCIM Groups
+$groups = $api->scimGroups()->get();
+
+//  Retrieve a SCIM Group
+$group = $api->scimGroup($id)->get();
+
+// Create a SCIM Group
+$api->scimGroups()->create([
+    'schemas' => [
+        'urn:ietf:params:scim:schemas:core:2.0:Group'
+    ],
+    'displayName' => 'Editors',
+    'externalId' => 'editors-id'
+]);
+
+//  Update a SCIM Group
+$api->scimGroup($id)->update([
+    'schemas' => [
+        'urn:ietf:params:scim:schemas:core:2.0:Group'
+    ],
+    'displayName' => 'Writers'
+]);
+
+// Delete a SCIM Group
+$api->scimGroup($id)->delete();
 ```
 
 ## Server
 
 ```php
-// Implemented but not yet documented.
+// Retrieve Server Info
+$info = $api->info($super_admin_token)->get();
+
+//  Ping the server
+$pong = $api->ping()->get();
 ```
 
 ## Settings
 
 ```php
-// Implemented but not yet documented.
+// List the Settings
+$settings = $api->settings()->get();
+
+// Retrieve a Setting
+$setting = $api->setting($id)->get();
+
+// Create a Setting
+$api->settings()->create([
+    'key' => 'my_custom_setting',
+    // 'value' => 12
+]);
+
+// Update a Setting
+$api->setting($id)->update([
+    'value' => 15
+]);
+
+//  Delete a Setting
+$api->setting($id)->delete();
 ```
 
 ## Users
 
 ```php
-// Implemented but not yet documented.
+// List the users
+$users = $api->users()->get();
+
+// Retrieve a User
+$user = $api->user($id)->get();
+
+// Retrieve the Current User
+$me = $api->me()->get();
+
+// Create a User
+$api->users()->create([
+    'first_name' => 'Ben',
+    'last_name' => 'Haynes',
+    'email' => 'demo@example.com',
+    'password' => 'd1r3ctu5',
+    'role' => 3,
+    'status' => 'active'
+]);
+
+// Update a User
+$api->user($id)->update([
+    'status' => 'suspended'
+]);
+
+// Delete a User
+$api->user($id)->delete();
+
+// Invite a New User
+$api->invite('demo@example.com')->create();
+
+//  Accept User Invite
+$api->acceptUser($token)->post();
+
+// Track the Last Used Page
+$api->trackingPage($id, '/thumper/settings/')->update();
+
+// List User Revisions
+$revisions = $api->userRevisions($id)->get();
+
+// Retrieve a User Revision
+$revision = $api->userRevision($id, $offset)->get();
 ```
 
 ## Utilities
 
 ```php
-// Implemented but not yet documented.
+// Create a Hash
+$hash = $api->hash('Directus')->create();
+
+// Verify a Hashed String
+$valid = $api->hashMatch('Directus', $hash)->create();
+
+// Generate a Random String
+$string = $api->randomString($length)->create();
+
+// Generate a 2FA Secret
+$secret = $api->secret()->get();
 ```
 
 ## Custom 
 
 ```php
-// Implemented but not yet documented.
+// Custom GET-Requests
+$response = $api->custom('example')->get();
+
+// Custom POST-Requests
+$response = $api->custom('example')->post(); // or ->create()
+
+// Custom PATCH-Requests
+$response = $api->custom('example')->patch(); // or ->update()
+
+// Custom DELETE-Requests
+$response = $api->custom('example')->delete();
+
+// Request with parameters
+$response = $api->custom('example/:id', ['id' => $id])->get();
 ```

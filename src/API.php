@@ -198,13 +198,12 @@ class API extends Request
         return $this->endpoint('modules');
     }
 
-    public function allFields(): self
+    public function fields(?string $collection = null): self
     {
-        return $this->endpoint(':project/fields');
-    }
+        if(is_null($collection)) {
+            return $this->endpoint(':project/fields');
+        }
 
-    public function fields(string $collection): self
-    {
         return $this->endpoint(':project/fields/:collection')->parameters(compact('collection'));
     }
 
@@ -333,19 +332,18 @@ class API extends Request
         return $this->endpoint(':project/permissions/me/:collection')->parameters(compact('collection'));
     }
 
-    public function projects(): object
+    public function projects(?string $project = null): object
     {
+        // This endpoint should use  'project' not 'projects', but unfortunately it has to be here because of the different endpoints :(
+        if (!is_null($project)) {
+            return $this->endpoint('server/projects/:project')->parameters(compact('project'));
+        }
         return $this->endpoint('server/projects');
     }
 
-    public function project($project): object
+    public function project(string $project): object
     {
         return $this->endpoint(':project/')->parameters(compact('project')); // should be server/projects/:project :-(
-    }
-
-    public function projectDelete(): object
-    {
-        return $this->endpoint('server/projects/:project');
     }
 
     public function relations(): object
@@ -383,9 +381,9 @@ class API extends Request
         return $this->endpoint(':project/scim/v2/Users');
     }
 
-    public function scimUser(int $id)
+    public function scimUser(int $external_id)
     {
-        return $this->endpoint(':project/scim/v2/Users/:id')->parameters(compact('id'));
+        return $this->endpoint(':project/scim/v2/Users/:external_id')->parameters(compact('external_id'));
     }
 
     public function scimGroups()
@@ -403,7 +401,7 @@ class API extends Request
         return $this->endpoint(':project/settings');
     }
 
-    public function setting(int $id): object
+    public function setting(string $id): object
     {
         return $this->endpoint(':project/settings/:id')->parameters(compact('id'));
     }
@@ -423,9 +421,9 @@ class API extends Request
         return $this->endpoint(':project/users/me');
     }
 
-    public function invite(string $mail): object
+    public function invite(string $email): object
     {
-        return $this->endpoint(':project/users/invite')->attributes(compact('mail'));
+        return $this->endpoint(':project/users/invite')->attributes(compact('email'));
     }
 
     public function acceptUser(string $token): object
@@ -433,9 +431,9 @@ class API extends Request
         return $this->endpoint(':project/users/invite/:token')->parameters(compact('token'));
     }
 
-    public function trackingPage(int $id): object
+    public function trackingPage(int $id, string $last_page): object
     {
-        return $this->endpoint(':project/users/:id/tracking/page')->parameters(compact('id'));
+        return $this->endpoint(':project/users/:id/tracking/page')->parameters(compact('id'))->attributes(compact('last_page'));
     }
 
     public function userRevisions(int $id): object

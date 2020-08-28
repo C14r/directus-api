@@ -29,4 +29,4 @@ $api->projects()->create([
 ]);
 
 // Delete a Project
-$api->projectDelete()->delete(); // <-- nasty :-( 
+$api->projects('thumper')->delete(); // <-- nasty :-( 
