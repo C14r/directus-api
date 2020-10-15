@@ -1,4 +1,9 @@
-# Directus
+# Directus API Wrapper for PHP
+
+![packagist version](https://img.shields.io/packagist/v/c14r/directus-api)
+![directus version](https://img.shields.io/badge/directus-v8.1.1-blue)
+
+This package allows users to easily consume the REST API provided by the Directus Headless CMS system in any PHP app.
 
 ## Installing
 
@@ -8,6 +13,37 @@ The recommended way to install Directus-API is through
 ```bash
 composer require c14r/directus-api
 ```
+
+## Table of Content
+
+- [Directus API Wrapper for PHP](#directus-api-wrapper-for-php)
+  - [Installing](#installing)
+  - [Table of Content](#table-of-content)
+- [Usage](#usage)
+  - [Creating an API-instance](#creating-an-api-instance)
+  - [Authentification](#authentification)
+  - [Error handling](#error-handling)
+  - [Items](#items)
+  - [Files](#files)
+  - [Assets (Thumbnails)](#assets-thumbnails)
+  - [Activities](#activities)
+  - [Collections](#collections)
+  - [Collection Presets](#collection-presets)
+  - [Extensions](#extensions)
+  - [Fields](#fields)
+  - [Folders](#folders)
+  - [Mail](#mail)
+  - [Permissions](#permissions)
+  - [Projects](#projects)
+  - [Relations](#relations)
+  - [Revisions](#revisions)
+  - [Roles](#roles)
+  - [SCIM](#scim)
+  - [Server](#server)
+  - [Settings](#settings)
+  - [Users](#users)
+  - [Utilities](#utilities)
+  - [Custom](#custom)
 
 # Usage
 
