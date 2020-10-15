@@ -1,7 +1,7 @@
 # Directus API Wrapper for PHP
 
 ![packagist version](https://img.shields.io/packagist/v/c14r/directus-api)
-![directus version](https://img.shields.io/badge/directus-v8.1.1-blue)
+![directus version](https://img.shields.io/badge/directus-v8.8.1-blue)
 
 This package allows users to easily consume the REST API provided by the Directus Headless CMS system in any PHP app.
 
