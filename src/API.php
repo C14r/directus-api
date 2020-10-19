@@ -460,6 +460,11 @@ class API extends Request
         return $this->query('limit', $this->helpers->limit($limit));
     }
 
+    public function all(): self
+    {
+        return $this->_limit(-1);
+    }
+
     public function _offset($offset): self
     {
         return $this->query('offset', $this->helpers->offset($offset));
