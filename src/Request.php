@@ -295,10 +295,10 @@ class Request
      * Sets multiple variables for the request.
      *
      * @param string $variable  Can be attributes, parameters, query, headers
-     * @param array $array
+     * @param array|object $array
      * @return self
      */
-    private function setArray(string $variable, array $array): self
+    private function setArray(string $variable, $array): self
     {
         foreach ($array as $key => $value) {
             $this->set($variable, $key, $value);
