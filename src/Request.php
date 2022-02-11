@@ -264,7 +264,10 @@ class Request
         return [
             'headers' => $this->headers,
             'query' => $this->query,
-            'json' => $this->attributes
+            'json' => $this->attributes,
+            'curl' => [
+                CURLOPT_SSL_VERIFYPEER => $_SERVER['HOST_NAME'] !== "localhost"
+            ]
         ];
     }
 
