@@ -9,7 +9,7 @@ use C14r\Directus\API\Helpers;
 
 /**
  * The main class for all Directus API-Requests.
- * 
+ *
  * @author Christian Pfeifer <mail@christian-pfeifer.de>
  */
 class API extends Request
@@ -32,8 +32,8 @@ class API extends Request
     /**
      * Undocumented function
      *
-     * @param string $baseUrl       The base URL of yout Directus installation.
-     * @param string|null $project  The project you're targetting.
+     * @param string $baseUrl The base URL of your Directus installation.
+     * @param string|null $project The project you're targeting.
      */
     public function __construct(string $baseUrl, ?string $project = null)
     {
@@ -58,7 +58,7 @@ class API extends Request
     }
 
     /**
-     * Check if the giben json object contains an error.
+     * Check if the given json object contains an error.
      *
      * @param object $json
      * @return boolean
@@ -86,19 +86,20 @@ class API extends Request
     }
 
     /**
-     * Retrieve a Temporary Access Token
+     * Retrieve Temporary Access Token
      *
      * @param string $email     Email address of the user you're retrieving the access token for.
      * @param string $password  Password of the user.
-     * @param string $mode      Choose between retrieving the token as a string, or setting it as a cookie. One of jwt, cookie. Defaults to jwt.
-     * @param string $otp       If 2FA is enabled, you need to pass the one time password.
+     * @param string|null $mode Choose between retrieving the token as a string, or setting it as a cookie. One of jwt, cookie. Defaults to jwt.
+     * @param string|null $otp  If 2FA is enabled, you need to pass the one time password.
      * @return object           Returns the token (if jwt mode is used) and the user record for the user you just authenticated as.
      */
     public function authenticate(string $email, string $password, string $mode = null, string $otp = null): object
     {
-        $response = $this->endpoint(':project/auth/authenticate')->attributes(compact('email', 'password', 'mode', 'otp'))->post();
+        $response = $this->endpoint(':project/auth/authenticate')
+            ->attributes(compact('email', 'password', 'mode', 'otp'))->post();
 
-        if( ! $this->isError($response)) {
+        if (!$this->isError($response)) {
             $this->token($response->data->token);
         }
 
@@ -106,7 +107,7 @@ class API extends Request
     }
 
     /**
-     * Refresh a Temporary Access Token
+     * Refresh Temporary Access Token
      *
      * @return object
      */
@@ -114,7 +115,7 @@ class API extends Request
     {
         $response = $this->endpoint(':project/auth/refresh')->attribute('token', $this->token)->post();
 
-        if( ! $this->isError($response)) {
+        if (!$this->isError($response)) {
             $this->token($response->data->token);
         }
 
@@ -123,7 +124,7 @@ class API extends Request
 
     public function custom($endpoint, array $parameters = []): self
     {
-        return $this->endpoint('custom/'.ltrim($endpoint, '/'))->parameters($parameters);
+        return $this->endpoint('custom/' . ltrim($endpoint, '/'))->parameters($parameters);
     }
 
     /**
@@ -139,7 +140,7 @@ class API extends Request
     /**
      * Endpoint for one activity
      *
-     * @param integer $id   Unique identifier of the item.
+     * @param integer $id Unique identifier of the item.
      * @return self
      */
     public function activity(int $id): self
@@ -160,7 +161,7 @@ class API extends Request
     /**
      * Endpoint for one comment
      *
-     * @param integer $id   Unique identifier of the comment (activity).
+     * @param integer $id Unique identifier of the comment (activity).
      * @return self
      */
     public function comment(int $id): self
@@ -200,7 +201,7 @@ class API extends Request
 
     public function fields(?string $collection = null): self
     {
-        if(is_null($collection)) {
+        if (is_null($collection)) {
             return $this->endpoint(':project/fields');
         }
 
@@ -395,7 +396,7 @@ class API extends Request
     {
         return $this->endpoint(':project/scim/v2/Groups/:id')->parameters(compact('id'));
     }
-    
+
     public function settings(): object
     {
         return $this->endpoint(':project/settings');
@@ -447,9 +448,6 @@ class API extends Request
     }
 
 
-
-
-
     public function _single($single = true): self
     {
         return $this->query('single', $this->helpers->single($single));
@@ -479,7 +477,7 @@ class API extends Request
     {
         return $this->query('meta', $this->helpers->meta($meta));
     }
-    
+
     public function _status($status = '*'): self
     {
         return $this->query('status', $this->helpers->status($status));
