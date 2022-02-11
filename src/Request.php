@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace C14r\Directus;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\ClientException;
 
@@ -21,7 +22,7 @@ class Request
     /**
      * Constructor
      *
-     * @param Directus $api The base URL
+     * @param string $baseUrl Directus base URL
      */
     public function __construct(string $baseUrl)
     {
@@ -42,19 +43,19 @@ class Request
 
         return $this;
     }
-    
+
     /**
      * Sets a parameter for the request.
      *
-     * @param string $key   The parameter
-     * @param mixed $value  Value of the parameter
+     * @param string $key The parameter
+     * @param mixed $value Value of the parameter
      * @return self
      */
     public function parameter(string $key, $value): self
     {
         return $this->set('parameters', $key, $value);
     }
-    
+
     /**
      * Sets multiple parameters for the request.
      *
@@ -69,15 +70,15 @@ class Request
     /**
      * Sets a attribute for the request.
      *
-     * @param string $key   The attribute
-     * @param mixed $value  Value of the attribute
+     * @param string $key The attribute
+     * @param mixed $value Value of the attribute
      * @return self
      */
-    public function attribute($key, $value): self
+    public function attribute(string $key, $value): self
     {
         return $this->set('attributes', $key, $value);
     }
-    
+
     /**
      * Sets multiple attributes for the request.
      *
@@ -92,11 +93,11 @@ class Request
     /**
      * Sets a query-parameter for the request.
      *
-     * @param string $key   The query-parameter
-     * @param mixed $value  Value of the query-parameter
+     * @param string $key The query-parameter
+     * @param mixed $value Value of the query-parameter
      * @return self
      */
-    public function query($key, $value): self
+    public function query(string $key, $value): self
     {
         return $this->set('query', $key, $value);
     }
@@ -111,19 +112,19 @@ class Request
     {
         return $this->setArray('query', $values);
     }
-    
+
     /**
      * Sets a header for the request.
      *
-     * @param string $key   The header
-     * @param mixed $value  Value of the header
+     * @param string $key The header
+     * @param mixed $value Value of the header
      * @return self
      */
-    public function header($key, $value): self
+    public function header(string $key, $value): self
     {
         return $this->set('headers', $key, $value);
     }
-    
+
     /**
      * Sets multiple headers for the request.
      *
@@ -138,9 +139,11 @@ class Request
     /**
      * Performs a POST-request (alias).
      *
+     * @param array $data
      * @return object
+     * @throws GuzzleException
      */
-    public function create($data = []): object
+    public function create(array $data = []): object
     {
         return $this->attributes($data)->post();
     }
@@ -148,9 +151,11 @@ class Request
     /**
      * Performs a PATCH-request (alias).
      *
+     * @param array $data
      * @return object
+     * @throws GuzzleException
      */
-    public function update($data = []): object
+    public function update(array $data = []): object
     {
         return $this->attributes($data)->patch();
     }
@@ -159,6 +164,7 @@ class Request
      * Performs a GET-request.
      *
      * @return object
+     * @throws GuzzleException
      */
     public function get(): object
     {
@@ -169,6 +175,7 @@ class Request
      * Performs a POST-request.
      *
      * @return object
+     * @throws GuzzleException
      */
     public function post(): object
     {
@@ -179,6 +186,7 @@ class Request
      * Performs a PATCH-request.
      *
      * @return object
+     * @throws GuzzleException
      */
     public function patch(): object
     {
@@ -189,6 +197,7 @@ class Request
      * Performs a DELETE-request.
      *
      * @return object
+     * @throws GuzzleException
      */
     public function delete(): object
     {
@@ -198,10 +207,11 @@ class Request
     /**
      * Performs the actual HTTP-request.
      *
-     * @param string $method    HTTP-Method (GET, POST, PATCH, DELETE)
-     * @param string $url       URL
-     * @param array $options    Headers and data
+     * @param string $method HTTP-Method (GET, POST, PATCH, DELETE)
+     * @param string $url URL
+     * @param array $options Headers and data
      * @return ResponseInterface
+     * @throws GuzzleException
      */
     protected function performRequest(string $method, string $url, array $options): ResponseInterface
     {
@@ -220,6 +230,9 @@ class Request
         ];
     }
 
+    /**
+     * @throws GuzzleException
+     */
     protected function request(string $method): object
     {
         $response = $this->performRequest($method, $this->buildUrl(), $this->buildOptions());
@@ -250,8 +263,11 @@ class Request
     {
         return [
             'headers' => $this->headers,
-            'query'   => $this->query,
-            'json'    => $this->attributes
+            'query' => $this->query,
+            'json' => $this->attributes,
+            'curl' => [
+                CURLOPT_SSL_VERIFYPEER => $_SERVER['HTTP_HOST'] !== "localhost"
+            ]
         ];
     }
 
@@ -275,7 +291,7 @@ class Request
     /**
      * Sets a variable for the request.
      *
-     * @param string $variable  Can be attributes, parameters, query, headers
+     * @param string $variable Can be attributes, parameters, query, headers
      * @param string $key
      * @param mixed $value
      * @return self
@@ -284,7 +300,7 @@ class Request
     {
         if (!is_null($value)) {
             $this->{$variable}[$key] = $value;
-        } elseif (is_null($value) and isset($this->{$variable}[$key])) {
+        } elseif (isset($this->{$variable}[$key])) {
             unset($this->{$variable}[$key]);
         }
 
@@ -294,7 +310,7 @@ class Request
     /**
      * Sets multiple variables for the request.
      *
-     * @param string $variable  Can be attributes, parameters, query, headers
+     * @param string $variable Can be attributes, parameters, query, headers
      * @param array|object $array
      * @return self
      */
@@ -320,7 +336,7 @@ class Request
         $this->attributes = [];
         $this->query = [];
         $this->headers = [];
-   
+
         return $this;
     }
 }
