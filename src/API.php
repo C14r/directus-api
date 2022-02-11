@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace C14r\Directus;
 
-use C14r\Directus\Request;
 use C14r\Directus\API\Helpers;
+use GuzzleHttp\Exception\GuzzleException;
 
 /**
  * The main class for all Directus API-Requests.
@@ -48,9 +48,9 @@ class API extends Request
      * Set's the API token.
      *
      * @param string $token one-time-token
-     * @return self
+     * @return Request
      */
-    public function token(string $token): self
+    public function token(string $token): Request
     {
         $this->token = $token;
 
@@ -88,11 +88,12 @@ class API extends Request
     /**
      * Retrieve Temporary Access Token
      *
-     * @param string $email     Email address of the user you're retrieving the access token for.
-     * @param string $password  Password of the user.
+     * @param string $email Email address of the user you're retrieving the access token for.
+     * @param string $password Password of the user.
      * @param string|null $mode Choose between retrieving the token as a string, or setting it as a cookie. One of jwt, cookie. Defaults to jwt.
-     * @param string|null $otp  If 2FA is enabled, you need to pass the one time password.
+     * @param string|null $otp If 2FA is enabled, you need to pass the one time password.
      * @return object           Returns the token (if jwt mode is used) and the user record for the user you just authenticated as.
+     * @throws GuzzleException
      */
     public function authenticate(string $email, string $password, string $mode = null, string $otp = null): object
     {
@@ -110,6 +111,7 @@ class API extends Request
      * Refresh Temporary Access Token
      *
      * @return object
+     * @throws GuzzleException
      */
     public function tokenRefresh(): object
     {
@@ -122,7 +124,7 @@ class API extends Request
         return $response;
     }
 
-    public function custom($endpoint, array $parameters = []): self
+    public function custom($endpoint, array $parameters = []): Request
     {
         return $this->endpoint('custom/' . ltrim($endpoint, '/'))->parameters($parameters);
     }
@@ -141,9 +143,9 @@ class API extends Request
      * Endpoint for one activity
      *
      * @param integer $id Unique identifier of the item.
-     * @return self
+     * @return Request
      */
-    public function activity(int $id): self
+    public function activity(int $id): Request
     {
         return $this->endpoint(':project/activity/:id')->parameters(compact('id'));
     }
@@ -162,14 +164,14 @@ class API extends Request
      * Endpoint for one comment
      *
      * @param integer $id Unique identifier of the comment (activity).
-     * @return self
+     * @return Request
      */
-    public function comment(int $id): self
+    public function comment(int $id): Request
     {
         return $this->endpoint(':project/activity/comment/:id')->parameters(compact('id'));
     }
 
-    public function asset(string $key): self
+    public function asset(string $key): Request
     {
         return $this->endpoint(':project/assets/:key')->parameters(compact('key'));
     }
@@ -179,7 +181,7 @@ class API extends Request
         return $this->endpoint(':project/collections');
     }
 
-    public function collection(string $collection): self
+    public function collection(string $collection): Request
     {
         return $this->endpoint(':project/collections/:collection')->parameters(compact('collection'));
     }
@@ -199,7 +201,7 @@ class API extends Request
         return $this->endpoint('modules');
     }
 
-    public function fields(?string $collection = null): self
+    public function fields(?string $collection = null): Request
     {
         if (is_null($collection)) {
             return $this->endpoint(':project/fields');
@@ -208,7 +210,7 @@ class API extends Request
         return $this->endpoint(':project/fields/:collection')->parameters(compact('collection'));
     }
 
-    public function field(string $collection, string $field): self
+    public function field(string $collection, string $field): Request
     {
         return $this->endpoint(':project/fields/:collection/:field')->parameters(compact('collection', 'field'));
     }
@@ -218,17 +220,17 @@ class API extends Request
         return $this->endpoint(':project/files');
     }
 
-    public function file(int $id): self
+    public function file(int $id): Request
     {
         return $this->endpoint(':project/files/:id')->parameters(compact('id'));
     }
 
-    public function fileRevisions(int $id): self
+    public function fileRevisions(int $id): Request
     {
         return $this->endpoint(':project/files/:id/revisions')->parameters(compact('id'));
     }
 
-    public function fileRevision(int $id, int $offset): self
+    public function fileRevision(int $id, int $offset): Request
     {
         return $this->endpoint(':project/files/:id/revisions/:offset')->parameters(compact('id', 'offset'));
     }
@@ -238,32 +240,32 @@ class API extends Request
         return $this->endpoint(':project/folders');
     }
 
-    public function folder(int $id): self
+    public function folder(int $id): Request
     {
         return $this->endpoint(':project/folders/:id')->parameters(compact('id'));
     }
 
-    public function item(string $collection, $id): self
+    public function item(string $collection, $id): Request
     {
         return $this->endpoint(':project/items/:collection/:id')->parameters(compact('collection', 'id'));
     }
 
-    public function items(string $collection): self
+    public function items(string $collection): Request
     {
         return $this->endpoint(':project/items/:collection')->parameters(compact('collection'));
     }
 
-    public function itemRevisions(string $collection, $id): self
+    public function itemRevisions(string $collection, $id): Request
     {
         return $this->endpoint(':project/items/:collection/:id/revisions')->parameters(compact('collection', 'id'));
     }
 
-    public function itemRevision(string $collection, $id, int $offset): self
+    public function itemRevision(string $collection, $id, int $offset): Request
     {
         return $this->endpoint(':project/items/:collection/:id/revisions/:offset')->parameters(compact('collection', 'id', 'offset'));
     }
 
-    public function itemRevert(string $collection, $id, int $revision): self
+    public function itemRevert(string $collection, $id, int $revision): Request
     {
         return $this->endpoint(':project/items/:collection/:id/revert/:revision')->parameters(compact('collection', 'id', 'revision'));
     }
@@ -278,12 +280,12 @@ class API extends Request
         return $this->endpoint(':project/collection_presets');
     }
 
-    public function preset(int $id): self
+    public function preset(int $id): Request
     {
         return $this->endpoint(':project/collection_presets/:id')->parameters(compact('id'));
     }
 
-    public function info(string $super_admin_token): self
+    public function info(string $super_admin_token): Request
     {
         return $this->endpoint('server/info')->queries(compact('super_admin_token'));
     }
@@ -377,22 +379,22 @@ class API extends Request
         return $this->endpoint(':project/roles/:id')->parameters(compact('id'));
     }
 
-    public function scimUsers()
+    public function scimUsers(): API
     {
         return $this->endpoint(':project/scim/v2/Users');
     }
 
-    public function scimUser(int $external_id)
+    public function scimUser(int $external_id): Request
     {
         return $this->endpoint(':project/scim/v2/Users/:external_id')->parameters(compact('external_id'));
     }
 
-    public function scimGroups()
+    public function scimGroups(): API
     {
         return $this->endpoint(':project/scim/v2/Groups');
     }
 
-    public function scimGroup(int $id)
+    public function scimGroup(int $id): Request
     {
         return $this->endpoint(':project/scim/v2/Groups/:id')->parameters(compact('id'));
     }
@@ -448,57 +450,57 @@ class API extends Request
     }
 
 
-    public function _single($single = true): self
+    public function _single($single = true): Request
     {
         return $this->query('single', $this->helpers->single($single));
     }
 
-    public function _limit($limit): self
+    public function _limit($limit): Request
     {
         return $this->query('limit', $this->helpers->limit($limit));
     }
 
-    public function all(): self
+    public function all(): Request
     {
         return $this->_limit(-1);
     }
 
-    public function _offset($offset): self
+    public function _offset($offset): Request
     {
         return $this->query('offset', $this->helpers->offset($offset));
     }
 
-    public function _page($page): self
+    public function _page($page): Request
     {
         return $this->query('page', $this->helpers->page($page));
     }
 
-    public function _meta($meta = '*'): self
+    public function _meta($meta = '*'): Request
     {
         return $this->query('meta', $this->helpers->meta($meta));
     }
 
-    public function _status($status = '*'): self
+    public function _status($status = '*'): Request
     {
         return $this->query('status', $this->helpers->status($status));
     }
 
-    public function _sort($sort): self
+    public function _sort($sort): Request
     {
         return $this->query('sort', $this->helpers->sort($sort));
     }
 
-    public function _q($q): self
+    public function _q($q): Request
     {
         return $this->query('q', $this->helpers->q($q));
     }
 
-    public function _filter($filter): self
+    public function _filter($filter): Request
     {
         return $this->query('filter', $this->helpers->filter($filter));
     }
 
-    public function _fields($fields): self
+    public function _fields($fields): Request
     {
         return $this->query('fields', $this->helpers->fields($fields));
     }
