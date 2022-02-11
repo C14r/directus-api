@@ -266,7 +266,7 @@ class Request
             'query' => $this->query,
             'json' => $this->attributes,
             'curl' => [
-                CURLOPT_SSL_VERIFYPEER => $_SERVER['HOST_NAME'] !== "localhost"
+                CURLOPT_SSL_VERIFYPEER => $_SERVER['HTTP_HOST'] !== "localhost"
             ]
         ];
     }
