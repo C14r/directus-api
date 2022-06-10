@@ -21,7 +21,7 @@ class Request
     /**
      * Constructor
      *
-     * @param Directus $api The base URL
+     * @param string $baseUrl
      */
     public function __construct(string $baseUrl)
     {
@@ -73,7 +73,7 @@ class Request
      * @param mixed $value  Value of the attribute
      * @return self
      */
-    public function attribute($key, $value): self
+    public function attribute(string $key, $value): self
     {
         return $this->set('attributes', $key, $value);
     }
@@ -96,7 +96,7 @@ class Request
      * @param mixed $value  Value of the query-parameter
      * @return self
      */
-    public function query($key, $value): self
+    public function query(string $key, $value): self
     {
         return $this->set('query', $key, $value);
     }
@@ -119,7 +119,7 @@ class Request
      * @param mixed $value  Value of the header
      * @return self
      */
-    public function header($key, $value): self
+    public function header(string $key, $value): self
     {
         return $this->set('headers', $key, $value);
     }
@@ -138,6 +138,7 @@ class Request
     /**
      * Performs a POST-request (alias).
      *
+     * @param array|object $data
      * @return object
      */
     public function create($data = []): object
@@ -148,6 +149,7 @@ class Request
     /**
      * Performs a PATCH-request (alias).
      *
+     * @param array|object $data
      * @return object
      */
     public function update($data = []): object
@@ -284,7 +286,7 @@ class Request
     {
         if (!is_null($value)) {
             $this->{$variable}[$key] = $value;
-        } elseif (is_null($value) and isset($this->{$variable}[$key])) {
+        } elseif (isset($this->{$variable}[$key])) {
             unset($this->{$variable}[$key]);
         }
 
