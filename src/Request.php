@@ -268,7 +268,7 @@ class Request
         $url = $endpoint;
 
         foreach ($this->parameters as $key => $value) {
-            $url = str_replace(':' . $key, $value, $url);
+            $url = str_replace(':' . $key, strval($value), $url);
         }
 
         return $url;
