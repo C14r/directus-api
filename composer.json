@@ -1,34 +1,35 @@
 {
-    "name": "c14r/directus-api",
-    "type": "library",
-    "description": "A Wrapper for the Directus REST-API",
-    "keywords": [
-        "http",
-        "rest",
-        "client",
-        "HTTP client",
-        "directus",
-        "wrapper"
-    ],
-    "homepage": "http://www.christian-pfeifer.de/",
-    "license": "GPL-3.0-only",
-    "authors": [
-        {
-            "name": "Christian Pfeifer",
-            "email": "mail@christian-pfeifer.de",
-            "homepage": "http://www.christian-pfeifer.de/"
-        }
-    ],
-	"require": {
-        "php": "^7.3",
-		"guzzlehttp/guzzle": "^7.0.1"
-	},
-    "require-dev": {
-        "phpunit/phpunit": "^9.2"
-    },
-    "autoload": {
-        "psr-4": {
-            "C14r\\Directus\\": "src/"
-        }
+  "name": "c14r/directus-api",
+  "type": "library",
+  "description": "A Wrapper for the Directus REST-API",
+  "keywords": [
+    "http",
+    "rest",
+    "client",
+    "HTTP client",
+    "directus",
+    "wrapper"
+  ],
+  "homepage": "http://www.christian-pfeifer.de/",
+  "license": "GPL-3.0-only",
+  "authors": [
+    {
+      "name": "Christian Pfeifer",
+      "email": "mail@christian-pfeifer.de",
+      "homepage": "http://www.christian-pfeifer.de/"
     }
+  ],
+  "require": {
+    "php": "^7.4|^8.0",
+    "ext-json": "*",
+    "guzzlehttp/guzzle": "^7.2.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "C14r\\Directus\\": "src/"
+    }
+  }
 }
