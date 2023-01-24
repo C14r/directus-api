@@ -253,7 +253,7 @@ class Request
         return [
             'headers' => $this->headers,
             'query'   => $this->query,
-            'json'    => $this->attributes
+            'json'    => !empty($this->attributes) ? $this->attributes : null
         ];
     }
 
