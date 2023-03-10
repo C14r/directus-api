@@ -215,7 +215,7 @@ class API extends Request
         return $this->endpoint(':project/files');
     }
 
-    public function file(int $id): self
+    public function file(string $id): self
     {
         return $this->endpoint(':project/files/:id')->parameters(compact('id'));
     }
